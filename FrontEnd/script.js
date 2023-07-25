@@ -47,7 +47,18 @@ function displayWorks(works, id) {
         }
         document.querySelector(".gallery").innerHTML = affichages
     } else {
-        console.log('filtre')
+        let affichages = ``
+        works.filter(dataFiltre => dataFiltre.categoryId == id)
+        .forEach(categorieFiltre => {
+            console.log(categorieFiltre)
+            
+            affichages += `<figure>`
+            affichages += `<img src="${categorieFiltre.imageUrl}" alt="${categorieFiltre.title}">`
+            affichages += `<figcaption>${categorieFiltre.title}</figcaption>`
+            affichages += `</figure>`
+
+            document.querySelector(".gallery").innerHTML = affichages
+        })
     }
     
 }
@@ -58,7 +69,7 @@ function getFilterId() {
 
     let filtreSelector = document.querySelectorAll(".filtre input")
 
-    return filtreSelector.forEach(btn => {
+    filtreSelector.forEach(btn => {
         btn.addEventListener("click", function(){
             let id = btn.id
             console.log(id)
@@ -68,23 +79,12 @@ function getFilterId() {
     })
 }
 
-//permet de filtrer les different categorie
-
-// function filter(works, id){
-    
-//     works.filter(dataFiltre => dataFiltre.categoryId == id)
-//         .forEach(categorieFiltre => {
-//             console.log(categorieFiltre)
-            
-//         })
-// }
-
 async function init() {
     const works = await getWorks()
-    const id = getFilterId()
+    getFilterId()
     const categories = await getCategory()
     displayCategories(categories)
-    displayWorks(works, id)
+    displayWorks(works)
     
 }
 
