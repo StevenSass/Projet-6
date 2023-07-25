@@ -81,10 +81,10 @@ function getFilterId() {
 
 async function init() {
     const works = await getWorks()
-    getFilterId()
+    const id = getFilterId()
     const categories = await getCategory()
     displayCategories(categories)
-    displayWorks(works)
+    displayWorks(works, id)
     
 }
 
