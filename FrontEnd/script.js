@@ -36,8 +36,9 @@ function getWorks() {
 
 // afficher works sur le site
 
-function displayWorks(works, id) {
-    if (id === 0) {
+async function displayWorks(works, id) {
+    if (id == 0) {
+        console.log("0")
         let affichages = ``
         for (let compteur = 0; compteur < works.length; compteur++){
                 affichages += `<figure>`
@@ -46,7 +47,9 @@ function displayWorks(works, id) {
                 affichages += `</figure>`
         }
         document.querySelector(".gallery").innerHTML = affichages
+
     } else {
+        console.log("1,2,3")
         let affichages = ``
         works.filter(dataFiltre => dataFiltre.categoryId == id)
         .forEach(categorieFiltre => {
@@ -60,36 +63,46 @@ function displayWorks(works, id) {
             document.querySelector(".gallery").innerHTML = affichages
         })
     }
-    
 }
 
 // lire les different bouton filtre
 
-function getFilterId() {
+async function getFilterId() {
 
     let filtreSelector = document.querySelectorAll(".filtre input")
 
-    filtreSelector.forEach(btn => {
-        btn.addEventListener("click", function(){
+        filtreSelector.forEach(btn => {
+        btn.addEventListener("click", async function(){
+            getWorks()
+            const works = await getWorks()
             let id = btn.id
             console.log(id)
-            
-            return id
+            displayWorks(works, id)
         })
     })
 }
 
-async function init() {
-    const works = await getWorks()
-    const id = getFilterId()
-    const categories = await getCategory()
-    displayCategories(categories)
-    displayWorks(works, id)
-    
+function defaut(works) {
+    let affichages = ``
+        for (let compteur = 0; compteur < works.length; compteur++){
+                affichages += `<figure>`
+                affichages += `<img src="${works[compteur].imageUrl}" alt="${works[compteur].title}">`
+                affichages += `<figcaption>${works[compteur].title}</figcaption>`
+                affichages += `</figure>`
+        }
+        document.querySelector(".gallery").innerHTML = affichages
 }
 
+async function init() {
+    const works = await getWorks()
+    const categories = await getCategory()
+    displayCategories(categories)
+    getFilterId()
+    defaut(works)
+}
 
 init()
+
 
 
 
