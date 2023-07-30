@@ -26,20 +26,20 @@
 <main>
     <div class="login-main">
         <h2>log In</h2>
-        <div class="login-element">
+        <form class="login-element">
             <div class="login-element_section">
-                <label for="login">E-mail</label>
-                <input type="text" id="login" required>
+                <label for="email" >E-mail</label>
+                <input type="email" id="email" minlength="5" required>
             </div>
             <div class="login-element_section">
-                <label for="login">Mot de passe</label>
-                <input type="password" id="login" required>
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" minlength="5" autocomplete="on" required>
             </div>
             <div class="login-end">
-                <button class="login-connect">Se connecter</button>
-                <p>mot de passe oublié</p>
+				<input type="button" value="Se connecter" class="login-connect" id="login">
+                <p>Mot de passe oublié</p>
             </div>
-        </div>
+        </form>
     </div>
 </main>
 <footer>
