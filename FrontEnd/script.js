@@ -73,7 +73,6 @@ async function getFilterId() {
 
         filtreSelector.forEach(btn => {
         btn.addEventListener("click", async function(){
-            getWorks()
             const works = await getWorks()
             let id = btn.id
             console.log(id)
@@ -182,3 +181,38 @@ function modalAffichage(works) {
     }
     document.querySelector(".modal__galerie").innerHTML = affichages
 }
+
+// ======================================================================================  //
+//                                    Modale ajout immage                                 //
+// ===================================================================================== //
+
+// lecture des class de la modale
+const modalAjoutContainer = document.querySelector(".modal-ajout-container")
+const modalAjoutTriggers = document.querySelectorAll(".modal-ajout-trigger")
+
+// au click lance la fonction toggleModal pour l'ouvrir
+// au click lance la function modalGetElement pour recuperer et afficher les element
+modalAjoutTriggers.forEach(trigger => trigger.addEventListener("click", function () {
+    toggleAjoutModal()
+}))
+
+// merme d'ouvrir la modale
+function toggleAjoutModal(){
+    modalAjoutContainer.classList.toggle("active")
+}
+
+// ======================================================================================  //
+//                                    liaison entre modal                                 //
+// ===================================================================================== //
+
+const addPhoto = document.querySelector(".modal__btn__add")
+addPhoto.addEventListener("click", function () {
+    toggleAjoutModal()
+    toggleModal()
+})
+
+const modalAjoutReturn = document.querySelector(".modal-ajout__return")
+modalAjoutReturn.addEventListener("click", function () {
+    toggleAjoutModal()
+    toggleModal()
+})
