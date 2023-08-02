@@ -594,12 +594,7 @@ header ul a {
 	margin: 50px 100px 50px 100px;
 }
 
-.modal-ajout__upload {
-	background-color: #E8F1F6;
-	border-radius: 5px;
-	width: 420px;
-	height: 169px;
-}
+
 
 .column {
 	display: flex;
@@ -665,3 +660,48 @@ header ul a {
 .ajout-photo select::after {
 	color: red;
 }
+
+/* ======================================================================================  //
+//                                    Modale immage                                       //
+// ===================================================================================== */
+
+.modal-ajout__upload {
+	background-color: #E8F1F6;
+	border-radius: 5px;
+	width: 420px;
+	height: 169px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 7px;
+}
+
+.modale-image {
+	position: absolute;
+	width: 129px;
+	height:169px;
+	visibility: visible;
+}
+
+.label-image {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 173px;
+	height: 36px;
+	border-radius: 50px;
+	background: #CBD6DC;
+
+	color: #306685;
+	
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+}
+
+.input-image {
+	display: none;
+}
+
