@@ -253,10 +253,10 @@ function deleteButton() {
 }
 
 // permet de lire l'image
-new FileReader
+// new FileReader
 
-new Image()
+// new Image()
 
-new FormData()
+// new FormData()
 
-new Blob()
+// new Blob()
