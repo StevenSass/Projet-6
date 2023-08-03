@@ -196,6 +196,7 @@ const modalAjoutTriggers = document.querySelectorAll(".modal-ajout-trigger")
 // au click lance la function modalGetElement pour recuperer et afficher les element
 modalAjoutTriggers.forEach(trigger => trigger.addEventListener("click", function () {
     toggleAjoutModal()
+    clearInput()
 }))
 
 // merme d'ouvrir la modale
@@ -203,15 +204,42 @@ function toggleAjoutModal(){
     modalAjoutContainer.classList.toggle("active")
 }
 
+const formImg = document.getElementById("form-img")
+//ferme l'image si non envoyer 
+function clearInput() {
+    const myImg = document.querySelector(".modale-image")
+    modaleAjoutUpload.removeChild(myImg)
+    document.querySelectorAll(".image-uploaded").forEach(list => {
+        list.classList.remove("hidden")
+    })
+}
+
 // je recolte l'input ainsi que l'image que je vais previsualiser
 const inputImage = document.querySelector(".input-image")
 console.log(inputImage);
 const modaleImage = document.querySelector(".modale-image")
 console.log(modaleImage);
+const modaleAjoutUpload = document.querySelector(".modal-ajout__upload")
+console.log(modaleAjoutUpload);
+const imageUploaded = document.querySelectorAll("image-uploaded")
 
-modaleImage.addEventListener("change", function() {
-    modaleImage.src = URL.createObjectURL(inputImage.file[0])
-})
+inputImage.addEventListener("change", function() {
+    const read = new FileReader()
+    read.onload = function() {
+        document.getElementById("form-img").reset()
+        const newImg = new Image()
+        newImg.src = read.result
+        newImg.classList.add("modale-image")
+        modaleAjoutUpload.appendChild(newImg)
+        document.querySelectorAll(".image-uploaded").forEach(list => {
+            list.classList.add("hidden")
+        })
+    }
+    read.readAsDataURL(inputImage.files[0])
+    },
+    false
+)
+
 
 
 // ======================================================================================  //
@@ -228,6 +256,7 @@ const modalAjoutReturn = document.querySelector(".modal-ajout__return")
 modalAjoutReturn.addEventListener("click", function () {
     toggleAjoutModal()
     toggleModal()
+    clearInput()
 })
 
 
@@ -246,17 +275,62 @@ function deleteButton() {
                 "Content-type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-        mode:"cors",
         })
         return false
     }))
 }
 
 // permet de lire l'image
-// new FileReader
+
+// new FileReader()
 
 // new Image()
 
 // new FormData()
 
 // new Blob()
+
+// ======================================================================================  //
+//                                    gestion categorie                                   //
+// ===================================================================================== //
+
+function categorie(categories) {
+    let affichageCategorie = ``
+    for (let compteur = 0; compteur < categories.length; compteur++){
+        affichageCategorie += `<option value="${categories[compteur].id}">${categories[compteur].name}</option>`
+    }
+    document.getElementById("ajout-photo-categorie").innerHTML = affichageCategorie
+}
+
+const categories = await getCategory()
+categorie(categories)
+
+// ======================================================================================  //
+//                                    envoie a l'api                                      //
+// ===================================================================================== //
+
+const inputTitle = document.getElementById("ajout-photo-title")
+console.log(inputTitle);
+const inputCategorie = document.getElementById("ajout-photo-categorie")
+console.log(inputCategorie);
+const ajoutPhotoForm = document.querySelector(".ajout-photo")
+
+ajoutPhotoForm.addEventListener("submit", function(event) {
+    event.preventDefault()
+    const formData = new FormData()
+    const imageData = inputImage.files[0]
+    const blob = new Blob([imageData], {type: "text/xml"})
+
+    formData.append("title", inputTitle.value)
+    formData.append("category", inputCategorie.value)
+    formData.append("image", blob)
+
+    fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData,
+    })
+})
+
