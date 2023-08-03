@@ -102,10 +102,6 @@ async function init() {
 
 init()
 
-
-
-
-
 // crée les bouton categorie automatiquement
 // filtrer les projet par rapport au bon bouton
 
@@ -224,18 +220,18 @@ console.log(modaleAjoutUpload);
 const imageUploaded = document.querySelectorAll("image-uploaded")
 
 inputImage.addEventListener("change", function() {
-    const read = new FileReader()
-    read.onload = function() {
+    const reader = new FileReader()
+    reader.onload = function() {
         document.getElementById("form-img").reset()
         const newImg = new Image()
-        newImg.src = read.result
+        newImg.src = reader.result
         newImg.classList.add("modale-image")
         modaleAjoutUpload.appendChild(newImg)
         document.querySelectorAll(".image-uploaded").forEach(list => {
             list.classList.add("hidden")
         })
     }
-    read.readAsDataURL(inputImage.files[0])
+    reader.readAsDataURL(inputImage.files[0])
     },
     false
 )
@@ -332,5 +328,14 @@ ajoutPhotoForm.addEventListener("submit", function(event) {
         },
         body: formData,
     })
+    .then((response) => response.json())
+    .then((data) => {
+      // Gérer la réponse de l'API après l'envoi réussi
+      console.log("Image envoyée avec succès:", data);
+      // Vous pouvez ajouter ici du code pour actualiser la liste des images, par exemple.
+    })
+    .catch((error) => {
+      console.error("Erreur lors de l'envoi de l'image:", error);
+    });
 })
 
