@@ -5,8 +5,8 @@ const urlWorks = "http://localhost:5678/api/works"
 
 // recuperer les donnée des Categorie dans l'api
 
-function getCategory() {
-    return fetch(urlCategorie).then((response) => response.json())
+async function getCategory() {
+    return await fetch(urlCategorie).then((response) => response.json())
     .then((categories) => {
         return categories
     })
@@ -102,9 +102,6 @@ async function init() {
 
 init()
 
-// crée les bouton categorie automatiquement
-// filtrer les projet par rapport au bon bouton
-
 // recuperation des information pour le mode admin
 const navbarEdition = document.querySelector(".navbar-edition")
 const adminSection1 = document.querySelector(".admin-section-1")
@@ -113,7 +110,7 @@ const filtre = document.querySelector(".filtre")
 const logoutLink = document.querySelector(".logout-link")
 const loginLink = document.querySelector(".login-link")
 
-// function pour ajputer le mode admin
+// function pour ajouter le mode admin
 function modeAdmin() {
     navbarEdition.classList.add("admin")
     adminSection1.classList.add("admin")
@@ -149,8 +146,9 @@ const modalTriggers = document.querySelectorAll(".modal-trigger")
 // au click lance la function modalGetElement pour recuperer et afficher les element
 modalTriggers.forEach(trigger => trigger.addEventListener("click", function () {
     toggleModal()
+    modalGetElement()
 }))
-modalGetElement()
+
 
 // merme d'ouvrir la modale
 function toggleModal(){
@@ -162,6 +160,8 @@ async function modalGetElement() {
     const works = await getWorks()
     modalAffichage(works)
     deleteButton()
+    const categories = await getCategory()
+    categorie(categories)
 }
 
 // permet d'afficher les element 
@@ -192,49 +192,57 @@ const modalAjoutTriggers = document.querySelectorAll(".modal-ajout-trigger")
 // au click lance la function modalGetElement pour recuperer et afficher les element
 modalAjoutTriggers.forEach(trigger => trigger.addEventListener("click", function () {
     toggleAjoutModal()
-    clearInput()
+    const categories = getCategory()
+    categorie(categories)
 }))
 
-// merme d'ouvrir la modale
+// permer d'ouvrir la modale
 function toggleAjoutModal(){
     modalAjoutContainer.classList.toggle("active")
 }
 
 const formImg = document.getElementById("form-img")
-//ferme l'image si non envoyer 
+// ferme l'image si non envoyer 
 function clearInput() {
-    const myImg = document.querySelector(".modale-image")
-    modaleAjoutUpload.removeChild(myImg)
+    try {
+        let myImg = document.querySelector(".modale-image")
+        const modaleAjoutUpload = document.querySelector(".modal-ajout__upload")
+        modaleAjoutUpload.removeChild(myImg)
+        let photoTitle = document.querySelector(".ajout-photo-title")
+        photoTitle = ""
+    }catch (error){
+
+    }
     document.querySelectorAll(".image-uploaded").forEach(list => {
         list.classList.remove("hidden")
     })
 }
 
-// je recolte l'input ainsi que l'image que je vais previsualiser
-const inputImage = document.querySelector(".input-image")
-console.log(inputImage);
-const modaleImage = document.querySelector(".modale-image")
-console.log(modaleImage);
-const modaleAjoutUpload = document.querySelector(".modal-ajout__upload")
-console.log(modaleAjoutUpload);
-const imageUploaded = document.querySelectorAll("image-uploaded")
+getImage()
+function getImage() {
+    // je recolte l'input ainsi que l'image que je vais previsualiser
+    const inputImage = document.querySelector(".input-image")
+    console.log(inputImage);
+    const modaleAjoutUpload = document.querySelector(".modal-ajout__upload")
+    console.log(modaleAjoutUpload);
 
-inputImage.addEventListener("change", function() {
-    const reader = new FileReader()
-    reader.onload = function() {
-        document.getElementById("form-img").reset()
-        const newImg = new Image()
-        newImg.src = reader.result
-        newImg.classList.add("modale-image")
-        modaleAjoutUpload.appendChild(newImg)
-        document.querySelectorAll(".image-uploaded").forEach(list => {
-            list.classList.add("hidden")
-        })
-    }
-    reader.readAsDataURL(inputImage.files[0])
-    },
-    false
-)
+    inputImage.addEventListener("change", function() {
+        const reader = new FileReader()
+        reader.onload = function() {
+            const newImg = new Image()
+            newImg.src = reader.result
+            newImg.classList.add("modale-image")
+            modaleAjoutUpload.appendChild(newImg)
+            console.log(newImg);
+            document.querySelectorAll(".image-uploaded").forEach(list => {
+                list.classList.add("hidden")
+            })
+        }
+        reader.readAsDataURL(inputImage.files[0])
+        }
+    )
+}
+
 
 
 
@@ -246,12 +254,15 @@ const addPhoto = document.querySelector(".modal__btn__add")
 addPhoto.addEventListener("click", function () {
     toggleAjoutModal()
     toggleModal()
+    reload()
+    clearInput()
 })
 
 const modalAjoutReturn = document.querySelector(".modal-ajout__return")
 modalAjoutReturn.addEventListener("click", function () {
     toggleAjoutModal()
     toggleModal()
+    reload()
     clearInput()
 })
 
@@ -272,19 +283,10 @@ function deleteButton() {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
         })
+        reload()
         return false
     }))
 }
-
-// permet de lire l'image
-
-// new FileReader()
-
-// new Image()
-
-// new FormData()
-
-// new Blob()
 
 // ======================================================================================  //
 //                                    gestion categorie                                   //
@@ -298,8 +300,8 @@ function categorie(categories) {
     document.getElementById("ajout-photo-categorie").innerHTML = affichageCategorie
 }
 
-const categories = await getCategory()
-categorie(categories)
+console.log("categories");
+
 
 // ======================================================================================  //
 //                                    envoie a l'api                                      //
@@ -312,14 +314,17 @@ console.log(inputCategorie);
 const ajoutPhotoForm = document.querySelector(".ajout-photo")
 
 ajoutPhotoForm.addEventListener("submit", function(event) {
+    let inputImage = document.querySelector(".input-image")
+    getImage()
     event.preventDefault()
     const formData = new FormData()
-    const imageData = inputImage.files[0]
-    const blob = new Blob([imageData], {type: "text/xml"})
-
+    let imageData = inputImage.files[0]
+    console.log(imageData);
+    console.log(inputTitle.value);
+    console.log(inputCategorie.value);
     formData.append("title", inputTitle.value)
     formData.append("category", inputCategorie.value)
-    formData.append("image", blob)
+    formData.append("image", imageData)
 
     fetch("http://localhost:5678/api/works", {
         method: "POST",
@@ -330,12 +335,21 @@ ajoutPhotoForm.addEventListener("submit", function(event) {
     })
     .then((response) => response.json())
     .then((data) => {
-      // Gérer la réponse de l'API après l'envoi réussi
-      console.log("Image envoyée avec succès:", data);
-      // Vous pouvez ajouter ici du code pour actualiser la liste des images, par exemple.
+        // Gérer la réponse de l'API après l'envoi réussi
+        console.log("Image envoyée avec succès:", data);
+        toggleAjoutModal()
+        toggleModal()
+        reload()
+        // Vous pouvez ajouter ici du code pour actualiser la liste des images, par exemple.
     })
     .catch((error) => {
-      console.error("Erreur lors de l'envoi de l'image:", error);
-    });
+        console.error("Erreur lors de l'envoi de l'image:", error);
+    })
+    
 })
 
+async function reload() {
+    modalGetElement()
+    const works = await getWorks()
+    defaut(works)
+}

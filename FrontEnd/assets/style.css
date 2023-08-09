@@ -324,7 +324,7 @@ header ul a {
 
 #introduction figure .admin-section-1 {
 	position: relative;
-	left: -145px;
+	left: -185px;
 	top: 10px;
 }
 
@@ -701,7 +701,6 @@ header ul a {
 	margin-top: -129px;
 	width: 129px;
 	height:169px;
-	visibility: visible;
 }
 
 .hidden {

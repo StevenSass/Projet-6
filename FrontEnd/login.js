@@ -21,7 +21,7 @@ async function login(url, data) {
     //permet si l'obtention du token de le stocker en local
     if (apiRecu.hasOwnProperty("token")) {
         localStorage.setItem("token", apiRecu.token)
-        window.location.href = "./index.html"
+        location.href = "./index.html"
         console.log("reussi");
         
     }
